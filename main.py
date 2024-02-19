@@ -3,13 +3,40 @@ import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error
 from tqdm import tqdm
+import argparse
 
-block_size = 32  # change block size
-motion_threshold = 15  # change threshold
-iframes = 25  # change iframe interval
-_write = True  # create output video
-mode = "mse"  # measuring: Mean Square Error (mse) or Mean Absolute Difference (mad)
+parser = argparse.ArgumentParser(
+    description="Set parameters for motion detection algorithm."
+)
 
+# Add arguments
+parser.add_argument(
+    "-b", "--block_size", type=int, help="Block size for motion detection"
+)
+parser.add_argument(
+    "-t", "--motion_threshold", type=float, help="Threshold for motion detection"
+)
+parser.add_argument("-i", "--iframe_intervals", type=int, help="Interval for I-frames")
+parser.add_argument("-m", "--mode", type=str, help="Mode of operation")
+parser.add_argument("-w", "--write", type=bool, help="Write output to file")
+parser.add_argument("-f", "--filename", type=str, help="Output filename")
+
+args = parser.parse_args()
+
+block_size = args.block_size if args.block_size else 32  # change block size
+motion_threshold = (
+    args.motion_threshold if args.motion_threshold else 15
+)  # change threshold
+iframes = (
+    args.iframe_intervals if args.iframe_intervals else 25
+)  # change iframe interval
+_write = args.write if args.write else True  # create output video
+mode = (
+    args.mode if args.mode else "mse"
+)  # measuring: Mean Square Error (mse) or Mean Absolute Difference (mad)
+filename = (
+    args.filename if args.filename else "sec"
+)  # filename of the video in the assets folder
 
 total = 0
 not_iframe = False
@@ -17,7 +44,6 @@ count = 0
 frames = []
 vid_len = 1
 
-filename = "sec"  # filename of the video in the assets folder
 video_capture = cv2.VideoCapture(f"assets\\{filename}.mp4")
 length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
 ret, anchor_frame = video_capture.read()
