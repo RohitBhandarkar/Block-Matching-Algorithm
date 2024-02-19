@@ -1,0 +1,6 @@
+./Include
+./Lib
+./Scripts
+./share
+./app.py
+./pyvenv.cfg
